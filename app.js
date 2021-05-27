@@ -21,43 +21,43 @@ prompt.get([{name: 'term',
                     api = "https://icanhazdadjoke.com/search?term="+result.term;
                 }
                 command = result.term;
+
+                request(api,{json: true}, (err,data)=> {
+                    if(err) return err.message;
+                    var json;
+                    if(api === "https://icanhazdadjoke.com"){
+                        
+                        json = JSON.stringify(data.body);
+                        fs.appendFile("joke.txt",json+"\n",(err)=>{
+                            if(err){
+                                console.log(err.else);
+                            }
+                        });
+                        console.log(data.body.joke);
+                    }
+                    else{
+                        var jokes = data.body["results"];
+                        var random = Math.floor(Math.random() * jokes.length);
+                        json = JSON.stringify(jokes[random]);
+                        if(jokes[random]!=null){
+                            fs.appendFile("joke.txt",json+"\n",(err)=>{
+                                if(err){
+                                    console.log(err.else);
+                                }
+                            });
+                            console.log(jokes[random].joke);
+                        }
+                        else{
+                            console.log("No jokes found for the term '"+command+"'")
+                        }
+                        
+                        
+                        
+                    }
+                    
+                    
+                        
+                });
             }
 );
 
-
-request(api,{json: true}, (err,data)=> {
-    if(err) return err.message;
-    var json;
-    if(api === "https://icanhazdadjoke.com"){
-        
-        json = JSON.stringify(data.body);
-        fs.appendFile("joke.txt",json+"\n",(err)=>{
-            if(err){
-                console.log(err.else);
-            }
-        });
-        console.log(data.body.joke);
-    }
-    else{
-        var jokes = data.body["results"];
-        var random = Math.floor(Math.random() * jokes.length);
-        json = JSON.stringify(jokes[random]);
-        if(jokes[random]!=null){
-            fs.appendFile("joke.txt",json+"\n",(err)=>{
-                if(err){
-                    console.log(err.else);
-                }
-            });
-            console.log(jokes[random].joke);
-        }
-        else{
-            console.log("No jokes found for the term '"+command+"'")
-        }
-        
-        
-        
-    }
-       
-    
-        
-});
